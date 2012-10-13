@@ -24,11 +24,15 @@ class ShellWrapTest extends PHPUnit_Framework_TestCase {
 
 
 	public function testDate() {
+
+		// Pass in a date
 		$output = sh::date(array(
 			'date' => '2012-10-10 10:00:00'
 		));
 		$output = trim(strval($output));
 
+		// This is the default output 
+		// @TODO: Check to make sure it's always UTC
 		$date = 'Wed Oct 10 10:00:00 UTC 2012';
 
 		$this->assertEquals($date, $output);
@@ -41,14 +45,19 @@ class ShellWrapTest extends PHPUnit_Framework_TestCase {
 
 	public function testCurlCommand() {
 
-		echo sh::curl('http://snapshotmedia.co.uk/', array(
-			'o' => 'page.html',
-			'silent' => true
+		echo sh::curl('http://example.com/', array(
+			'output' => 'page.html',
+			'silent' => false,
+			'location' => true
 		));
 		
-		// @TODO: Add assertions
+		// @TODO: Make this less horrible, save files in a temp dir
+
+		$this->assertFileExists('page.html');
 
 		sh::rm('page.html');
+
+		$this->assertFileNotExists('page.html');
 	}
 
 }

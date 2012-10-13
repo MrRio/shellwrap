@@ -27,7 +27,7 @@ use \MrRio\ShellWrap as sh;
 
 echo sh:ls('*');
 
-echo sh::sort($sh->du($sh->glob("*"), "-sb"), "-rn");
+echo sh::sort(sh::du(sh::glob("*"), "-sb"), "-rn");
 
 echo sh::curl('http://snapshotmedia.co.uk', array(
 	'o' => 'page.html',
