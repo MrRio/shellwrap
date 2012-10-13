@@ -6,7 +6,7 @@ require 'ShellWrap.php';
 use \MrRio\ShellWrap as sh;
 
 echo '<pre>';
-echo sh::ls()->thingy();
+echo sh::ls('-l');
 
 
 echo '<pre>';
@@ -16,16 +16,16 @@ echo '<pre>';
 $sh = new sh();
 
 //echo $sh('ls', '-l *');
-
+echo sh::curl('http://snapshotmedia.co.uk', array(
+	'o' => 'page.html',
+	'silent' => true
+), 'summat', array('and', 'some'));
 
 exit();
 
 echo sh::ls('-l');
 
-echo sh::curl('http://snapshotmedia.co.uk', array(
-	'o' => 'page.html',
-	'silent' => true
-), 'summat', array('and', 'some'));
+
 
 echo sh::git('pull', array('hard' => true), 'HEAD');
 

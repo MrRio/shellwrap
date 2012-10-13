@@ -5,7 +5,7 @@ namespace MrRio;
 class ShellWrap {
 	
 	static private $output = array();
-	static private $prepend = null;
+	static private $prepend = array();
 
 	public function __construct($prepend = null) {
 		self::$prepend = $prepend;
@@ -19,11 +19,11 @@ class ShellWrap {
 	 * Check if array is associative, thanks to 
 	 * http://stackoverflow.com/questions/173400
 	 **/ 
-	private function __isAssociative($array) {
+	static private function __isAssociative($array) {
 		return array_keys($array) !== range(0, count($array) - 1);
 	}
 
-	private function __run($arguments) {
+	static private function __run($arguments) {
 
 		// Unwind the args, figure out which ones were passed in as an array
 
@@ -74,8 +74,8 @@ class ShellWrap {
 		$output = array();
 		$return_var = null;
 
+		// @TODO: Replace with proper pipes
 		echo $shell;
-
 		exec($shell, $output, $return_var);
 
 
