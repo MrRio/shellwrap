@@ -7,6 +7,8 @@ class ShellWrap {
 	static private $output = array();
 	static private $prepend = array();
 
+	static public $exec_string;
+
 	public function __construct($prepend = null) {
 		self::$prepend = $prepend;
 	}
@@ -53,7 +55,8 @@ class ShellWrap {
 
 							// If you just pass in 'true', it'll just add the arg
 							if ($val !== true) {
-								$output .= '=' . $val;
+
+								$output .= ' ' . escapeshellarg($val);
 							} 
 
 						}
@@ -75,7 +78,7 @@ class ShellWrap {
 		$return_var = null;
 
 		// @TODO: Replace with proper pipes
-		echo $shell;
+		self::$exec_string = $shell;
 		exec($shell, $output, $return_var);
 
 
@@ -104,7 +107,7 @@ class ShellWrap {
 		}
 
 		self::__run($arguments);
-		return new ShellWrap($arguments);
+		return new ShellWrap();
 	}
 
 }

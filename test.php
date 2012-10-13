@@ -13,6 +13,12 @@ echo '<pre>';
 
 // This does no magic path finding
 
+sh::adduser('rio', array(
+	'system' => true,
+	'shell' => '/bin/bash',
+	'no_create_home' => true
+));
+
 $sh = new sh();
 
 //echo $sh('ls', '-l *');
