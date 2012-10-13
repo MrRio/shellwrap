@@ -35,3 +35,8 @@ echo sh::curl('http://snapshotmedia.co.uk', array(
 ));
 ?>
 ```
+
+Acknowledgements
+--------------------
+
+Inspired by the Python project [sh by Andrew Moffat](http://pypi.python.org/pypi/sh)
