@@ -4,10 +4,15 @@ namespace MrRio;
 
 class ShellWrap {
 	
-	private $output = array();
+	static private $output = array();
+	static private $prepend = null;
+
+	public function __construct($prepend = null) {
+		self::$prepend = $prepend;
+	}
 
 	public function __toString() {
-		return implode("\n", $this->output) . "\n";
+		return implode("\n", self::$output) . "\n";
 	}
 
 	/**
@@ -24,7 +29,7 @@ class ShellWrap {
 
 		foreach($arguments as $arg_key => $argument) {
 			if (is_array($argument)) {
-				if ($this->__isAssociative($argument)) {
+				if (self::__isAssociative($argument)) {
 					
 					// Ok, so we're passing in arguments
 					
@@ -74,7 +79,7 @@ class ShellWrap {
 		exec($shell, $output, $return_var);
 
 
-		$this->output = $output;
+		self::$output = $output;
 	}
 
 	// Raw arguments
@@ -89,6 +94,17 @@ class ShellWrap {
 		array_unshift($arguments, $name);
 		$this->__run($arguments);
 		return $this;
+	}
+
+	public static function __callStatic($name, $arguments) {
+
+		array_unshift($arguments, $name);
+		if (isset(self::$prepend)) {
+			$arguments = array_merge(self::$prepend, $arguments);
+		}
+
+		self::__run($arguments);
+		return new ShellWrap($arguments);
 	}
 
 }
