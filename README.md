@@ -20,5 +20,13 @@ Examples
 
 // Get a list of files in the current directory, and list them biggest first
 
+```php
+<?php 
 echo $sh->sort($sh->du($sh->glob("*"), "-sb"), "-rn");
 
+echo sh::curl('http://snapshotmedia.co.uk', array(
+	'o' => 'page.html',
+	'silent' => true
+));
+?>
+```
