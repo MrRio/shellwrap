@@ -22,8 +22,3 @@ Examples
 
 echo $sh->sort($sh->du($sh->glob("*"), "-sb"), "-rn");
 
-
-This is such a bad idea
-------------------------
-
-It's decidedly better than magic quotes. 
