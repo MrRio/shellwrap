@@ -1,38 +1,68 @@
-ShellWrap
+ShellWrap 0.1
 ==================
-
-DISCLAIMER: This isn't ready to use yet.
 
 What is it?
 ------------------
 
-It's a way to use powerful underlying Unix tools while feeling slightly less dirty.
+It's a beautiful way to use powerful Linux/Unix tools in PHP. Easily and logically pipe commands together,
+capture errors as PHP Exceptions and use a simple yet powerful syntax. 
 
-Features (TBC)
+Features 
 ------------------
 
 * Exceptions are thrown if the executable returns an error.
 * Paths to binaries are automatically resolved
-* Easy logging of command line options
+* All arguments are properly escaped
+
+Future Ideas
+-------------------
+
+* Easy logging of command ran and their outputs
+* sudo support
+* Advanced piping options
 
 Examples
 ------------------
-
-// Get a list of files in the current directory, and list them biggest first
 
 ```php
 <?php 
 require 'ShellWrap.php';
 use \MrRio\ShellWrap as sh;
 
-echo sh:ls('*');
+// List all files in current dir
+echo sh::ls();
 
-echo sh::sort(sh::du(sh::glob("*"), "-sb"), "-rn");
+// Touch a file to create it
+sh::touch('file.html');
 
-echo sh::curl('http://snapshotmedia.co.uk', array(
-	'o' => 'page.html',
-	'silent' => true
-));
+// Remove file
+sh::rm('file.html');
+
+// Remove file again (this fails, and throws an exception because the file doesn't exist)
+
+try {
+	sh::rm('file.html');
+} catch (Exception $e) {
+	echo 'Caught failing sh::rm() call';
+}
+
+// Checkout a branch in git
+sh::git('checkout', 'master');
+
+// You can also pipe the output of one command, into another
+// This downloads example.com through cURL, follows location, then pipes through grep to 
+// filter for 'html'
+echo sh::grep('html', sh::curl('http://example.com', array(
+	'location' => true
+)));
+
+// This throws an exception, as 'invalidoption' is not a valid argument
+try {
+	echo sh::ls(array('invalidoption' => true));
+} catch (Exception $e) {
+	echo 'Caught failing sh::ls() call';
+}
+
 ?>
 ```
 

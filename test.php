@@ -1,71 +1,39 @@
-<?php
-
-// Require the class
+<?php 
 require 'ShellWrap.php';
-
 use \MrRio\ShellWrap as sh;
 
+// List all files in current dir
+echo sh::ls();
+
+// Touch a file to create it
+sh::touch('file.html');
+
+// Remove file
+sh::rm('file.html');
+
+// Remove file again (this fails, and throws an exception because the file doesn't exist)
+
+try {
+	sh::rm('file.html');
+} catch (Exception $e) {
+	echo 'Caught failing sh::rm() call';
+}
+
+// Checkout a branch in git
+sh::git('checkout', 'master');
+
+// You can also pipe the output of one command, into another
+// This downloads example.com through cURL, follows location, then pipes through grep to 
+// filter for 'html'
 echo sh::grep('html', sh::curl('http://example.com', array(
 	'location' => true
 )));
 
-echo sh::ls();
-
-// Sort current folder by biggest file first
-//sh::touch('file.txt');
-//echo sh::sort(sh::du('-sk', '*'));
-
-//echo sh::sort(sh::du(sh::ls(), "-sb"), "-rn");
-// echo sh::curl('http://snapshotmedia.co.uk', array(
-// 	'o' => 'page.html',
-// 	'silent' => true
-// ));
-
-
-//echo sh::ls(array('l' => true));
-//sh::rm('page.html');
-//echo sh::sort(sh::du(sh::glob("*"), "-sb"), "-rn");
-
-exit();
-
-echo '<pre>';
-echo sh::ls('-l');
-
-
-echo '<pre>';
-
-// This does no magic path finding
-
-//echo $sh('ls', '-l *');
-echo sh::curl('http://snapshotmedia.co.uk', array(
-	'o' => 'page.html',
-	'silent' => true
-), 'summat', array('and', 'some'));
-
-exit();
-
-echo sh::ls('-l');
-
-
-
-echo sh::git('pull', array('hard' => true), 'HEAD');
-
-
-
-//$ret = $sh->ls('-l');
-
-sh::git()->pull('origin master');
-
-sh::curl('http://snapshotmedia.co.uk', array(
-	'o' => 'page.html'
-));
-
-$ls = explode("\n", $sh::ls('*'));
-
-echo sh::sort(sh::du(sh::glob("*"), "-sb"), "-rn");
-
-// Run a raw command
-echo $sh('ls -l');
-
+// This throws an exception, as 'invalidoption' is not a valid argument
+try {
+	echo sh::ls(array('invalidoption' => true));
+} catch (Exception $e) {
+	echo 'Caught failing sh::ls() call';
+}
 
 ?>
