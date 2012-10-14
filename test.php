@@ -5,8 +5,25 @@ require 'ShellWrap.php';
 
 use \MrRio\ShellWrap as sh;
 
-echo sh::ls(array('l' => true));
-sh::rm('page.html');
+echo sh::grep('html', sh::curl('http://example.com', array(
+	'location' => true
+)));
+
+echo sh::ls();
+
+// Sort current folder by biggest file first
+//sh::touch('file.txt');
+//echo sh::sort(sh::du('-sk', '*'));
+
+//echo sh::sort(sh::du(sh::ls(), "-sb"), "-rn");
+// echo sh::curl('http://snapshotmedia.co.uk', array(
+// 	'o' => 'page.html',
+// 	'silent' => true
+// ));
+
+
+//echo sh::ls(array('l' => true));
+//sh::rm('page.html');
 //echo sh::sort(sh::du(sh::glob("*"), "-sb"), "-rn");
 
 exit();

@@ -6,6 +6,7 @@ class ShellWrap {
 	
 	static private $output = array();
 	static private $prepend = array();
+	static private $stdin = null;
 
 	static public $exec_string;
 
@@ -28,9 +29,15 @@ class ShellWrap {
 	static private function __run($arguments) {
 
 		// Unwind the args, figure out which ones were passed in as an array
+		self::$stdin = null;
 
 		foreach($arguments as $arg_key => $argument) {
-			if (is_array($argument)) {
+			if (is_object($argument)) {
+
+				self::$stdin = strval($argument);
+				unset($arguments[$arg_key]);
+
+			} else if (is_array($argument)) {
 				if (self::__isAssociative($argument)) {
 					
 					// Ok, so we're passing in arguments
@@ -90,10 +97,12 @@ class ShellWrap {
 
 		if (is_resource($process)) {
 
+			fwrite($pipes[0], self::$stdin);
+			fclose($pipes[0]);
+
 			$error_output = trim(stream_get_contents($pipes[2]));
 			self::$output = stream_get_contents($pipes[1]);
 
-			fclose($pipes[0]);
 			fclose($pipes[1]);
 			fclose($pipes[2]);
 
