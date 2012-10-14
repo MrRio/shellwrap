@@ -5,7 +5,7 @@ What is it?
 ------------------
 
 It's a beautiful way to use powerful Linux/Unix tools in PHP. Easily and logically pipe commands together,
-capture errors as PHP Exceptions and use a simple yet powerful syntax. 
+capture errors as PHP Exceptions and use a simple yet powerful syntax. Works with any command line tool automagically.
 
 Features 
 ------------------
@@ -63,6 +63,24 @@ try {
 } catch (Exception $e) {
 	echo 'Caught failing sh::ls() call';
 }
+
+// Commands can be written multiple ways
+sh::git('reset', array('hard' => true), 'HEAD');
+sh::git('reset', '--hard', 'HEAD');
+sh::git(array('reset', '--hard', 'HEAD'));
+
+// Arguments passed in are automatically escaped, this expands to
+// date --date '2012-10-10 10:00:00'
+echo sh::date(array(
+	'date' => '2012-10-10 10:00:00'
+));
+
+// If arg keys are one letter, is assumes one dash prefixing it
+// date -d '2012-10-10 10:00:00'
+echo sh::date(array(
+	'd' => '2012-10-10 10:00:00'
+));
+
 
 ?>
 ```
