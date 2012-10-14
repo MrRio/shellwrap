@@ -45,7 +45,7 @@ class ShellWrapTest extends PHPUnit_Framework_TestCase {
 
 	public function testCurlCommand() {
 
-		echo sh::curl('http://example.com/', array(
+		sh::curl('http://example.com/', array(
 			'output' => 'page.html',
 			'silent' => false,
 			'location' => true

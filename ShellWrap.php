@@ -14,7 +14,7 @@ class ShellWrap {
 	}
 
 	public function __toString() {
-		return implode("\n", self::$output) . "\n";
+		return self::$output;
 	}
 
 	/**
@@ -79,10 +79,38 @@ class ShellWrap {
 
 		// @TODO: Replace with proper pipes
 		self::$exec_string = $shell;
-		exec($shell, $output, $return_var);
+
+		$descriptor_spec = array(
+			0 => array('pipe', 'r'), // Stdout
+			1 => array('pipe', 'w'), // Stdin
+			2 => array('pipe', 'w') // Stderr
+		);
+
+		$process = proc_open($shell, $descriptor_spec, $pipes);
+
+		if (is_resource($process)) {
+
+			$error_output = trim(stream_get_contents($pipes[2]));
+			self::$output = stream_get_contents($pipes[1]);
+
+			fclose($pipes[0]);
+			fclose($pipes[1]);
+			fclose($pipes[2]);
+
+			$return_value = proc_close($process);
+
+			if ($return_value != 0) {
+				throw new \Exception($error_output);
+			}
 
 
-		self::$output = $output;
+		} else {
+			throw new \Exception('Process failed to spawn');
+		}
+
+		//exec($shell, $output, $return_var);
+
+
 	}
 
 	// Raw arguments

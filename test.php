@@ -5,6 +5,12 @@ require 'ShellWrap.php';
 
 use \MrRio\ShellWrap as sh;
 
+echo sh::ls(array('l' => true));
+sh::rm('page.html');
+//echo sh::sort(sh::du(sh::glob("*"), "-sb"), "-rn");
+
+exit();
+
 echo '<pre>';
 echo sh::ls('-l');
 
@@ -12,14 +18,6 @@ echo sh::ls('-l');
 echo '<pre>';
 
 // This does no magic path finding
-
-sh::adduser('rio', array(
-	'system' => true,
-	'shell' => '/bin/bash',
-	'no_create_home' => true
-));
-
-$sh = new sh();
 
 //echo $sh('ls', '-l *');
 echo sh::curl('http://snapshotmedia.co.uk', array(
