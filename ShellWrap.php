@@ -91,7 +91,10 @@ class ShellWrap {
 
 		$parts = explode(' ', $shell);
 		$parts[0] = exec('which ' . $parts[0]);
-		$shell = implode(' ', $parts);
+
+		if ($parts[0] != '') {
+			$shell = implode(' ', $parts);
+		}
 
 		$descriptor_spec = array(
 			0 => array('pipe', 'r'), // Stdout
