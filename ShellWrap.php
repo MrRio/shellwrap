@@ -84,8 +84,14 @@ class ShellWrap {
 		$output = array();
 		$return_var = null;
 
-		// @TODO: Replace with proper pipes
+		// Set exec_string for testing purposes
 		self::$exec_string = $shell;
+
+		// Prepend the path
+
+		$parts = explode(' ', $shell);
+		$parts[0] = exec('which ' . $parts[0]);
+		$shell = implode(' ', $parts);
 
 		$descriptor_spec = array(
 			0 => array('pipe', 'r'), // Stdout
