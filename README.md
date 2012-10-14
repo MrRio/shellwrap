@@ -10,7 +10,7 @@ capture errors as PHP Exceptions and use a simple yet powerful syntax.
 Features 
 ------------------
 
-* Flexible and sexy syntax
+* Flexible and sexy syntax.
 * Exceptions are thrown if the executable returns an error.
 * Paths to binaries are automatically resolved.
 * All arguments are properly escaped.
