@@ -33,6 +33,16 @@ use \MrRio\ShellWrap as sh;
 // List all files in current dir
 echo sh::ls();
 
+// Checkout a branch in git
+sh::git('checkout', 'master');
+
+// You can also pipe the output of one command, into another
+// This downloads example.com through cURL, follows location, then pipes through grep to 
+// filter for 'html'
+echo sh::grep('html', sh::curl('http://example.com', array(
+	'location' => true
+)));
+
 // Touch a file to create it
 sh::touch('file.html');
 
@@ -47,15 +57,6 @@ try {
 	echo 'Caught failing sh::rm() call';
 }
 
-// Checkout a branch in git
-sh::git('checkout', 'master');
-
-// You can also pipe the output of one command, into another
-// This downloads example.com through cURL, follows location, then pipes through grep to 
-// filter for 'html'
-echo sh::grep('html', sh::curl('http://example.com', array(
-	'location' => true
-)));
 
 // This throws an exception, as 'invalidoption' is not a valid argument
 try {

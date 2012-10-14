@@ -32,6 +32,7 @@ class ShellWrap {
 		self::$stdin = null;
 
 		foreach($arguments as $arg_key => $argument) {
+			// If it's being passed in as an object, then pipe into stdin
 			if (is_object($argument)) {
 
 				self::$stdin = strval($argument);
