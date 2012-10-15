@@ -1,7 +1,7 @@
 {
     "name": "mrrio/shellwrap",
     "type": "library",
-    "description": "Use any command-line tool as a PHP function",
+    "description": "Use any command-line tool as a PHP function.",
     "keywords": ["command", "shell", "api", "command-line", "exec"],
     "homepage": "http://github.com/MrRio/shellwrap",
     "license": "MIT",
