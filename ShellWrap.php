@@ -20,10 +20,10 @@ class ShellWrap {
 
 	/**
 	 * Check if array is associative, thanks to 
-	 * http://stackoverflow.com/questions/173400
+	 * http://stackoverflow.com/questions/173400/#4254008
 	 **/ 
 	static private function __isAssociative($array) {
-		return array_keys($array) !== range(0, count($array) - 1);
+		return (bool) count(array_filter(array_keys($array), 'is_string'));
 	}
 
 	static private function __run($arguments) {
