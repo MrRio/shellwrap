@@ -1,0 +1,19 @@
+{
+    "name": "MrRio/shellwrap",
+    "type": "library",
+    "description": "Use any command-line tool as a PHP function",
+    "keywords": ["command", "shell", "api", "command-line", "exec"],
+    "homepage": "http://github.com/MrRio/shellwrap",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "James Hall",
+            "email": "james@snapshotmedia.co.uk",
+            "homepage": "http://twitter.com/MrRio",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    }
+}

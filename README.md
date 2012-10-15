@@ -1,4 +1,4 @@
-ShellWrap 0.1
+ShellWrap
 ==================
 
 What is it?
