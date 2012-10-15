@@ -19,7 +19,6 @@ class ShellWrapTest extends PHPUnit_Framework_TestCase {
 		$glob_output = glob('*');
 
 		$this->assertEquals($glob_output, $output);
-		
 	}
 
 
@@ -58,6 +57,29 @@ class ShellWrapTest extends PHPUnit_Framework_TestCase {
 		sh::rm('page.html');
 
 		$this->assertFileNotExists('page.html');
+	}
+
+	/**
+	 * Using 'echo' to test long and short arguments
+	 **/
+	public function testLongAndShortArgs() {
+
+		// Call ShellWrap directly as echo is reserved
+		$sh = new sh();
+		$result = $sh('echo', array(
+			'test' => true,
+			'key' => 'value',
+			'other' => 'value with spaces',
+			's' => true,
+			'should_not_be_echod' => false
+		));
+
+		$expected = "echo --test --key 'value' --other 'value with spaces' -s";
+		$this->assertEquals($expected, trim(sh::$exec_string));
+
+		// Expect the echo result to remove the shell escaping
+		$expected = "--test --key value --other value with spaces -s";
+		$this->assertEquals($expected, trim($result));
 	}
 
 }
