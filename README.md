@@ -1,4 +1,4 @@
-ShellWrap
+ShellWrapper
 ==================
 
 What is it?
@@ -15,20 +15,14 @@ Features
 * Paths to binaries are automatically resolved.
 * All arguments are properly escaped.
 
-Future Ideas
--------------------
-
-* Easy logging of command ran and their outputs.
-* sudo support.
-* Advanced piping options.
 
 Examples
 ------------------
 
 ```php
 <?php 
-require 'ShellWrap.php';
-use \MrRio\ShellWrap as sh;
+require_once 'vendor/autoload.php';
+use Guumaster\ShellWrapper as sh;
 
 // List all files in current dir
 echo sh::ls();
