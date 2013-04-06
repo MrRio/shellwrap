@@ -1,85 +1,88 @@
 <?php
 
-require_once 'PHPUnit/Autoload.php';
-require_once '../ShellWrap.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-use \MrRio\ShellWrap as sh;
+use Guumaster\Shell\Wrapper as sh;
 
-class ShellWrapTest extends PHPUnit_Framework_TestCase {
+class ShTest extends PHPUnit_Framework_TestCase
+{
+    public function testLsAgainstGlob()
+    {
+        $output = sh::ls();
 
-	public function testLsAgainstGlob() {
-		$output = sh::ls();
+        // @TODO: Need to figure out a nicer way of doing this
+        // Needs to be an object for the piping, but then gets converted to a string
+        // when __toString is fired.
+        $output = trim(strval($output));
 
-		// @TODO: Need to figure out a nicer way of doing this
-		// Needs to be an object for the piping, but then gets converted to a string
-		// when __toString is fired.
-		$output = trim(strval($output));
+        $output = explode("\n", $output);
+        $glob_output = glob('*');
 
-		$output = explode("\n", $output);
-		$glob_output = glob('*');
+        $this->assertEquals($glob_output, $output);
+    }
 
-		$this->assertEquals($glob_output, $output);
-	}
+    public function testDate()
+    {
+        // needed in non-english environments
+        putenv('LC_ALL=en_US.utf8');
 
+        // Pass in a date
+        $output = sh::date(array(
+            'utc' => true,
+            'date' => '2012-10-10 10:00:00'
+        ));
+        $output = trim(strval($output));
 
-	public function testDate() {
+        // This is the default output
+        // @TODO: Check to make sure it's always UTC
+        $date = 'Wed Oct 10 10:00:00 UTC 2012';
 
-		// Pass in a date
-		$output = sh::date(array(
-			'date' => '2012-10-10 10:00:00'
-		));
-		$output = trim(strval($output));
+        $this->assertEquals($date, $output);
 
-		// This is the default output 
-		// @TODO: Check to make sure it's always UTC
-		$date = 'Wed Oct 10 10:00:00 UTC 2012';
+        $date_exec = "date --utc --date '2012-10-10 10:00:00'";
 
-		$this->assertEquals($date, $output);
+        $this->assertEquals($date_exec, sh::$exec_string);
 
-		$date_exec = "date --date '2012-10-10 10:00:00'";
+    }
 
-		$this->assertEquals($date_exec, sh::$exec_string);
+    public function testCurlCommand()
+    {
+        sh::curl('http://example.com/', array(
+            'output' => 'page.html',
+            'silent' => false,
+            'location' => true
+        ));
 
-	}
+        // @TODO: Make this less horrible, save files in a temp dir
 
-	public function testCurlCommand() {
+        $this->assertFileExists('page.html');
 
-		sh::curl('http://example.com/', array(
-			'output' => 'page.html',
-			'silent' => false,
-			'location' => true
-		));
-		
-		// @TODO: Make this less horrible, save files in a temp dir
+        sh::rm('page.html');
 
-		$this->assertFileExists('page.html');
+        $this->assertFileNotExists('page.html');
+    }
 
-		sh::rm('page.html');
+    /**
+     * Using 'echo' to test long and short arguments
+     **/
+    public function testLongAndShortArgs()
+    {
+        // Call ShellWrap directly as echo is reserved
+        $sh = new sh();
+        $result = $sh('echo', array(
+            'test' => true,
+            'key' => 'value',
+            'other' => 'value with spaces',
+            's' => true,
+            'should_not_be_echod' => false
+        ));
 
-		$this->assertFileNotExists('page.html');
-	}
+        $expected = "echo --test --key 'value' --other 'value with spaces' -s";
+        $this->assertEquals($expected, trim(sh::$exec_string));
 
-	/**
-	 * Using 'echo' to test long and short arguments
-	 **/
-	public function testLongAndShortArgs() {
-
-		// Call ShellWrap directly as echo is reserved
-		$sh = new sh();
-		$result = $sh('echo', array(
-			'test' => true,
-			'key' => 'value',
-			'other' => 'value with spaces',
-			's' => true,
-			'should_not_be_echod' => false
-		));
-
-		$expected = "echo --test --key 'value' --other 'value with spaces' -s";
-		$this->assertEquals($expected, trim(sh::$exec_string));
-
-		// Expect the echo result to remove the shell escaping
-		$expected = "--test --key value --other value with spaces -s";
-		$this->assertEquals($expected, trim($result));
-	}
+        // Expect the echo result to remove the shell escaping
+        $expected = "--test --key value --other value with spaces -s";
+        $this->assertEquals($expected, trim($result));
+    }
 
 }

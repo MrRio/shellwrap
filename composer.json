@@ -1,19 +1,25 @@
 {
-    "name": "mrrio/shellwrap",
+    "name": "guumaster/sh",
     "type": "library",
     "description": "Use any command-line tool as a PHP function.",
     "keywords": ["command", "shell", "api", "command-line", "exec"],
-    "homepage": "http://github.com/MrRio/shellwrap",
+    "homepage": "http://github.com/guumaster/sh",
     "license": "MIT",
     "authors": [
         {
-            "name": "James Hall",
-            "email": "james@snapshotmedia.co.uk",
-            "homepage": "http://twitter.com/MrRio",
+            "name": "Guumaster",
+            "email": "gustavoandresmarin@gmail.com",
+            "homepage": "http://twitter.com/guumaster",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "phpunit/phpunit": "3.7.x-dev"
+    },
+    "autoload": {
+        "psr-0": {
+            "Guumaster": "src/"
+        }
     }
 }
