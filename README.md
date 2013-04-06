@@ -1,14 +1,6 @@
 ShellWrapper
 ==================
 
-Installation
-------------------
-
-```sh
-composer.phar require guumaster/sh
-```
-
-
 What is it?
 ------------------
 
@@ -91,5 +83,4 @@ echo sh::date(array(
 Acknowledgements
 --------------------
 
-Forked from https://github.com/MrRio/shellwrap
 Inspired by the Python project [sh by Andrew Moffat](http://pypi.python.org/pypi/sh)
