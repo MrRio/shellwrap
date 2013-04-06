@@ -2,6 +2,8 @@
 
 namespace Guumaster;
 
+use Exception;
+
 class ShellWrapper
 {
     private static $output = array();
@@ -122,12 +124,12 @@ class ShellWrapper
             $return_value = proc_close($process);
 
             if ($return_value != 0) {
-                throw new \Exception($error_output);
+                throw new Exception($error_output, $return_value);
             }
 
 
         } else {
-            throw new \Exception('Process failed to spawn');
+            throw new Exception('Process failed to spawn');
         }
 
         //exec($shell, $output, $return_var);
