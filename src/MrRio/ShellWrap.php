@@ -1,10 +1,10 @@
 <?php
 
-namespace Guumaster;
+namespace MrRio;
 
 use Exception;
 
-class ShellWrapper
+class ShellWrap
 {
     private static $output = array();
     private static $prepend = array();

@@ -2,9 +2,9 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Guumaster\ShellWrapper as sh;
+use MrRio\ShellWrap as sh;
 
-class ShTest extends PHPUnit_Framework_TestCase
+class ShellWrapTest extends \PHPUnit_Framework_TestCase
 {
     public function testLsAgainstGlob()
     {
