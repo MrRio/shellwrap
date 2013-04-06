@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Guumaster\Shell\Wrapper as sh;
+use Guumaster\ShellWrapper as sh;
 
 class ShTest extends PHPUnit_Framework_TestCase
 {

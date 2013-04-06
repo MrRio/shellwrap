@@ -1,6 +1,14 @@
 ShellWrap
 ==================
 
+Installation
+------------------
+
+```sh
+composer.phar require guumaster/sh
+```
+
+
 What is it?
 ------------------
 
@@ -15,20 +23,14 @@ Features
 * Paths to binaries are automatically resolved.
 * All arguments are properly escaped.
 
-Future Ideas
--------------------
-
-* Easy logging of command ran and their outputs.
-* sudo support.
-* Advanced piping options.
 
 Examples
 ------------------
 
 ```php
 <?php 
-require 'ShellWrap.php';
-use \MrRio\ShellWrap as sh;
+require_once 'vendor/autoload.php';
+use Guumaster\ShellWrapper as sh;
 
 // List all files in current dir
 echo sh::ls();
@@ -89,4 +91,5 @@ echo sh::date(array(
 Acknowledgements
 --------------------
 
+Forked from https://github.com/MrRio/shellwrap
 Inspired by the Python project [sh by Andrew Moffat](http://pypi.python.org/pypi/sh)

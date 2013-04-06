@@ -1,8 +1,8 @@
 <?php
 
-namespace Guumaster\Shell;
+namespace Guumaster;
 
-class Wrapper
+class ShellWrapper
 {
     private static $output = array();
     private static $prepend = array();

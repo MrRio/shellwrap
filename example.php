@@ -1,7 +1,7 @@
 <?php
 require_once 'vendor/autoload.php';
 
-use MrRio\ShellWrap as sh;
+use Guumaster\ShellWrapper as sh;
 
 // List all files in current dir
 echo sh::ls();
