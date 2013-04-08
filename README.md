@@ -1,4 +1,4 @@
-ShellWrapper
+ShellWrap
 ==================
 
 What is it?
@@ -22,7 +22,7 @@ Examples
 ```php
 <?php 
 require_once 'vendor/autoload.php';
-use Guumaster\ShellWrapper as sh;
+use MrRio\ShellWrap as sh;
 
 // List all files in current dir
 echo sh::ls();
