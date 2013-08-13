@@ -6,6 +6,12 @@ use Exception;
 
 class ShellWrap
 {
+    /**
+     * If set to true, will output standard output, if set to a function, will send through function
+     * @var boolean
+     */
+    static public $displayStdout = false;
+
     private static $output = array();
     private static $prepend = array();
     private static $stdin = null;
@@ -115,8 +121,26 @@ class ShellWrap
             fwrite($pipes[0], self::$stdin);
             fclose($pipes[0]);
 
+            $output = '';
+
+            while(! feof($pipes[1])) {
+                $stdout = fgets($pipes[1], 1024);
+                if (strlen($stdout) == 0) break;
+
+                if (self::$displayStdout === true) {
+                    echo $stdout;
+                }
+
+                $outputFunction = self::$displayStdout;
+                if (is_callable($outputFunction)) {
+                    $outputFunction($stdout);
+                }
+
+                $output .= $stdout;
+            }
+
             $error_output = trim(stream_get_contents($pipes[2]));
-            self::$output = stream_get_contents($pipes[1]);
+            self::$output = $output;
 
             fclose($pipes[1]);
             fclose($pipes[2]);
@@ -126,7 +150,6 @@ class ShellWrap
             if ($return_value != 0) {
                 throw new Exception($error_output, $return_value);
             }
-
 
         } else {
             throw new Exception('Process failed to spawn');
