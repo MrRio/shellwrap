@@ -21,29 +21,29 @@ class ShellWrapTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($glob_output, $output);
     }
 
-    public function testDate()
-    {
-        // needed in non-english environments
-        putenv('LC_ALL=en_US.utf8');
+    // public function testDate()
+    // {
+    //     // needed in non-english environments
+    //     putenv('LC_ALL=en_US.utf8');
 
-        // Pass in a date
-        $output = sh::date(array(
-            'utc' => true,
-            'date' => '2012-10-10 10:00:00'
-        ));
-        $output = trim(strval($output));
+    //     // Pass in a date
+    //     $output = sh::date(array(
+    //         'utc' => true,
+    //         'date' => '2012-10-10 10:00:00'
+    //     ));
+    //     $output = trim(strval($output));
 
-        // This is the default output
-        // @TODO: Check to make sure it's always UTC
-        $date = 'Wed Oct 10 10:00:00 UTC 2012';
+    //     // This is the default output
+    //     // @TODO: Check to make sure it's always UTC
+    //     $date = 'Wed Oct 10 10:00:00 UTC 2012';
 
-        $this->assertEquals($date, $output);
+    //     $this->assertEquals($date, $output);
 
-        $date_exec = "date --utc --date '2012-10-10 10:00:00'";
+    //     $date_exec = "date --utc --date '2012-10-10 10:00:00'";
 
-        $this->assertEquals($date_exec, sh::$exec_string);
+    //     $this->assertEquals($date_exec, sh::$exec_string);
 
-    }
+    // }
 
     public function testCurlCommand()
     {
