@@ -12,6 +12,13 @@ class ShellWrap
      */
     static public $displayStdout = false;
 
+    /**
+     * If set to true, will output stderr to standard output, if set to a function, will send through function
+     * @var boolean
+     */
+    static public $displayStderr = false;
+
+
     private static $output = array();
     private static $prepend = array();
     private static $stdin = null;
@@ -140,6 +147,10 @@ class ShellWrap
             }
 
             $error_output = trim(stream_get_contents($pipes[2]));
+
+            if (self::$displayStderr) {
+                echo $error_output;
+            }
             self::$output = $output;
 
             fclose($pipes[1]);
