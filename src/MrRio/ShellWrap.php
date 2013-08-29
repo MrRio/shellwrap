@@ -18,6 +18,12 @@ class ShellWrap
      */
     static public $displayStderr = false;
 
+    /**
+     * If set to true, will throw an exception on error
+     * @var boolean
+     */
+    static public $exceptionOnError = true;
+
 
     private static $output = array();
     private static $prepend = array();
@@ -159,7 +165,12 @@ class ShellWrap
             $return_value = proc_close($process);
 
             if ($return_value != 0) {
-                throw new Exception($error_output, $return_value);
+
+                if (self::$exceptionOnError) {
+                    throw new Exception($error_output, $return_value);
+                } else {
+                    return $error_output;
+                }
             }
 
         } else {
