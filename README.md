@@ -80,6 +80,12 @@ echo sh::date(array(
 ?>
 ```
 
+Warning
+--------
+
+Don't use any user inputted data with these commands. Even with very paranoid filtering, you 
+can't know all the potential pitfalls of each command you're using. Use your noggin. 
+
 Acknowledgements
 --------------------
 
