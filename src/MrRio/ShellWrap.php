@@ -59,8 +59,14 @@ class ShellWrap
             // If it's being passed in as an object, then pipe into stdin
             if (is_object($argument)) {
 
-                self::$stdin = strval($argument);
-                unset($arguments[$arg_key]);
+                // If it's a anonymous function, then push stdout into it
+                if (get_class($argument) == 'Closure') {
+                    self::$displayStdout = $argument;
+                    unset($arguments[$arg_key]);
+                } else {
+                    self::$stdin = strval($argument);
+                    unset($arguments[$arg_key]);
+                }
 
             } elseif (is_array($argument)) {
                 if (self::__isAssociative($argument)) {
