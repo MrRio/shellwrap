@@ -80,6 +80,14 @@ echo sh::date(array(
 ?>
 ```
 
+
+Interactive Shell
+-----------------
+
+ShellWrap also ships with an interactive shell mode. You can access this by typing:
+
+```./bin/shellwrap```
+
 Warning
 --------
 
