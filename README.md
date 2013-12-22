@@ -86,7 +86,9 @@ Interactive Shell
 
 ShellWrap also ships with an interactive shell mode. You can access this by typing:
 
-```./bin/shellwrap```
+```
+./bin/shellwrap
+```
 
 Warning
 --------
