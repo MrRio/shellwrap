@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__. '/../vendor/autoload.php';
+require_once __DIR__ . '/../src/MrRio/ShellWrap.php';
+
+use MrRio\ShellWrap as sh;
+	
+$sh = new MrRio\ShellWrap;
+
+echo "ShellWrap Interactive Shell\n";
+echo "\n";
+echo 'Mapped to $sh due to eval() limitations. Ctrl+D to exit.' . "\n\n";
+
+$boris = new \Boris\Boris('shellwrap> ');
+
+$boris->setLocal(array('sh' => $sh));
+$boris->start();
