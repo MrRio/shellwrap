@@ -54,6 +54,7 @@ class ShellWrap
     {
         // Unwind the args, figure out which ones were passed in as an array
         self::$stdin = null;
+        $closureOut = false;
 
         foreach ($arguments as $arg_key => $argument) {
             // If it's being passed in as an object, then pipe into stdin
@@ -61,7 +62,7 @@ class ShellWrap
 
                 // If it's a anonymous function, then push stdout into it
                 if (get_class($argument) == 'Closure') {
-                    self::$displayStdout = $argument;
+                    $closureOut = $argument;
                     unset($arguments[$arg_key]);
                 } else {
                     self::$stdin = strval($argument);
@@ -155,6 +156,9 @@ class ShellWrap
                     $outputFunction($stdout);
                 }
 
+                if (is_callable($closureOut)) {
+                    $closureOut($stdout);
+                }
                 $output .= $stdout;
             }
 
