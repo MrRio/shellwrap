@@ -2,7 +2,7 @@
 
 namespace MrRio;
 
-use Exception;
+use MrRio\ShellWrapException;
 
 class ShellWrap
 {
@@ -173,14 +173,14 @@ class ShellWrap
             if ($return_value != 0) {
 
                 if (self::$exceptionOnError) {
-                    throw new Exception($error_output, $return_value);
+                    throw new ShellWrapException($error_output, $return_value);
                 } else {
                     return $error_output;
                 }
             }
 
         } else {
-            throw new Exception('Process failed to spawn');
+            throw new ShellWrapException('Process failed to spawn');
         }
 
         //exec($shell, $output, $return_var);

@@ -47,7 +47,7 @@ sh::rm('file.html');
 
 try {
 	sh::rm('file.html');
-} catch (Exception $e) {
+} catch (ShellWrapException $e) {
 	echo 'Caught failing sh::rm() call';
 }
 
@@ -55,7 +55,7 @@ try {
 // This throws an exception, as 'invalidoption' is not a valid argument
 try {
 	echo sh::ls(array('invalidoption' => true));
-} catch (Exception $e) {
+} catch (ShellWrapException $e) {
 	echo 'Caught failing sh::ls() call';
 }
 

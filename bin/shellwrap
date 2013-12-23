@@ -9,8 +9,11 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
 
 use MrRio\ShellWrap as sh;
 use MrRio\ShellInspector;
-	
+
 $sh = new MrRio\ShellWrap;
+
+error_reporting(0);
+define('SHELL_WRAP_INTERACTIVE', true);
 
 echo "ShellWrap Interactive Shell\n";
 echo "\n";
@@ -21,4 +24,8 @@ $boris = new \Boris\Boris('shellwrap> ');
 $boris->setInspector(new ShellInspector());
 
 $boris->setLocal(array('sh' => $sh));
-$boris->start();
+
+try {
+	$boris->start();
+} catch (ShellWrapException $e) {
+}
