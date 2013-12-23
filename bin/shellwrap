@@ -8,6 +8,7 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
 }
 
 use MrRio\ShellWrap as sh;
+use MrRio\ShellInspector;
 	
 $sh = new MrRio\ShellWrap;
 
@@ -16,6 +17,8 @@ echo "\n";
 echo 'Mapped to $sh due to eval() limitations. Ctrl+D to exit.' . "\n\n";
 
 $boris = new \Boris\Boris('shellwrap> ');
+
+$boris->setInspector(new ShellInspector());
 
 $boris->setLocal(array('sh' => $sh));
 $boris->start();
