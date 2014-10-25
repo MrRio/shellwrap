@@ -80,6 +80,20 @@ echo sh::date(array(
 ?>
 ```
 
+Example: Tailing a file and adding timestamps to output
+-------------------------------------------------------
+
+You can stream the output of a command into a callback function. For example:
+
+```php
+sh::tail('-f log', function($in) {
+	echo "\033[32m" . date('Y-m-d H:i:s') . "\033[39m " . $in;
+});
+```
+
+Make sure the file 'log' exists. This will output a timestamp, and the input. Try echoing into the log file.
+
+The escape codes are to add a little colour to the terminal.
 
 Interactive Shell
 -----------------
