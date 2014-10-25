@@ -14,6 +14,7 @@ Features
 * Exceptions are thrown if the executable returns an error.
 * Paths to binaries are automatically resolved.
 * All arguments are properly escaped.
+* Callback functions for streaming output
 
 
 Examples
