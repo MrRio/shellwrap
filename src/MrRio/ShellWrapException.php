@@ -16,7 +16,7 @@ class ShellWrapException extends Exception
         if (defined('SHELL_WRAP_INTERACTIVE')) {
             echo $error;
         } else {
-            return false;
+            return $error;
         }
     }
 }
