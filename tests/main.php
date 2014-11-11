@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use MrRio\ShellWrap as sh;
+use MrRio\ShellWrapException;
 
 class ShellWrapTest extends \PHPUnit_Framework_TestCase
 {
@@ -85,4 +86,25 @@ class ShellWrapTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, trim($result));
     }
 
+    /**
+     * @expectedException MrRio\ShellWrapException
+     */
+    public function testRaiseException()
+    {
+        $sh = new sh();
+        try {
+          $sh(__DIR__ . '/fixtures/fail.sh', 1);
+        }
+        catch (MrRio\ShellWrapException $e) {
+          $this->assertEquals((string) $e, "[1]: foo bar\n");
+          $this->assertEquals($e->getCode(), 1);
+          throw $e;
+        }
+    }
+
+    public function testNotRaiseException()
+    {
+        $sh = new sh();
+        $result = $sh(__DIR__ . '/fixtures/fail.sh', 0);
+    }
 }
