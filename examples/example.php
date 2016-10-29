@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
 use MrRio\ShellWrap as sh;
 
@@ -27,13 +27,13 @@ sh::git('checkout', 'master');
 // You can also pipe the output of one command, into another
 // This downloads example.com through cURL, follows location, then pipes through grep to
 // filter for 'html'
-echo sh::grep('html', sh::curl('http://example.com', array(
-    'location' => true
-)));
+echo sh::grep('html', sh::curl('http://example.com', [
+    'location' => true,
+]));
 
 // This throws an exception, as 'invalidoption' is not a valid argument
 try {
-    echo sh::ls(array('invalidoption' => true));
+    echo sh::ls(['invalidoption' => true]);
 } catch (Exception $e) {
     echo 'Caught failing sh::ls() call';
 }

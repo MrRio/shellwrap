@@ -1,9 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
 use MrRio\ShellWrap as sh;
-use MrRio\ShellWrapException;
 
 class ShellWrapTest extends \PHPUnit_Framework_TestCase
 {
@@ -48,11 +47,11 @@ class ShellWrapTest extends \PHPUnit_Framework_TestCase
 
     public function testCurlCommand()
     {
-        sh::curl('http://example.com/', array(
+        sh::curl('http://example.com/', [
             'output' => 'page.html',
             'silent' => false,
-            'location' => true
-        ));
+            'location' => true,
+        ]);
 
         // @TODO: Make this less horrible, save files in a temp dir
 
@@ -64,25 +63,25 @@ class ShellWrapTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Using 'echo' to test long and short arguments
+     * Using 'echo' to test long and short arguments.
      **/
     public function testLongAndShortArgs()
     {
         // Call ShellWrap directly as echo is reserved
         $sh = new sh();
-        $result = $sh('echo', array(
+        $result = $sh('echo', [
             'test' => true,
             'key' => 'value',
             'other' => 'value with spaces',
             's' => true,
-            'should_not_be_echod' => false
-        ));
+            'should_not_be_echod' => false,
+        ]);
 
         $expected = "echo --test --key 'value' --other 'value with spaces' -s";
         $this->assertEquals($expected, trim(sh::$exec_string));
 
         // Expect the echo result to remove the shell escaping
-        $expected = "--test --key value --other value with spaces -s";
+        $expected = '--test --key value --other value with spaces -s';
         $this->assertEquals($expected, trim($result));
     }
 
@@ -93,18 +92,17 @@ class ShellWrapTest extends \PHPUnit_Framework_TestCase
     {
         $sh = new sh();
         try {
-          $sh(__DIR__ . '/fixtures/fail.sh', 1);
-        }
-        catch (MrRio\ShellWrapException $e) {
-          $this->assertEquals((string) $e, "[1]: foo bar\n");
-          $this->assertEquals($e->getCode(), 1);
-          throw $e;
+            $sh(__DIR__.'/fixtures/fail.sh', 1);
+        } catch (MrRio\ShellWrapException $e) {
+            $this->assertEquals((string) $e, "[1]: foo bar\n");
+            $this->assertEquals($e->getCode(), 1);
+            throw $e;
         }
     }
 
     public function testNotRaiseException()
     {
         $sh = new sh();
-        $result = $sh(__DIR__ . '/fixtures/fail.sh', 0);
+        $result = $sh(__DIR__.'/fixtures/fail.sh', 0);
     }
 }

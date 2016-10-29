@@ -2,31 +2,31 @@
 
 namespace MrRio;
 
-use MrRio\ShellWrapException;
-
 class ShellWrap
 {
     /**
-     * If set to true, will output standard output, if set to a function, will send through function
-     * @var boolean
+     * If set to true, will output standard output, if set to a function, will send through function.
+     *
+     * @var bool
      */
-    static public $displayStdout = false;
+    public static $displayStdout = false;
 
     /**
-     * If set to true, will output stderr to standard output, if set to a function, will send through function
-     * @var boolean
+     * If set to true, will output stderr to standard output, if set to a function, will send through function.
+     *
+     * @var bool
      */
-    static public $displayStderr = false;
+    public static $displayStderr = false;
 
     /**
-     * If set to true, will throw an exception on error
-     * @var boolean
+     * If set to true, will throw an exception on error.
+     *
+     * @var bool
      */
-    static public $exceptionOnError = true;
+    public static $exceptionOnError = true;
 
-
-    private static $output = array();
-    private static $prepend = array();
+    private static $output = [];
+    private static $prepend = [];
     private static $stdin = null;
 
     public static $exec_string;
@@ -43,7 +43,7 @@ class ShellWrap
 
     /**
      * Check if array is associative, thanks to
-     * http://stackoverflow.com/questions/173400/#4254008
+     * http://stackoverflow.com/questions/173400/#4254008.
      **/
     private static function __isAssociative($array)
     {
@@ -68,7 +68,6 @@ class ShellWrap
                     self::$stdin = strval($argument);
                     unset($arguments[$arg_key]);
                 }
-
             } elseif (is_array($argument)) {
                 if (self::__isAssociative($argument)) {
 
@@ -77,7 +76,6 @@ class ShellWrap
                     $output = '';
 
                     foreach ($argument as $key => $val) {
-
                         if ($output != '') {
                             $output .= ' ';
                         }
@@ -94,10 +92,8 @@ class ShellWrap
 
                             // If you just pass in 'true', it'll just add the arg
                             if ($val !== true) {
-
-                                $output .= ' ' . escapeshellarg($val);
+                                $output .= ' '.escapeshellarg($val);
                             }
-
                         }
                     }
 
@@ -113,7 +109,7 @@ class ShellWrap
 
         $shell = implode(' ', $arguments);
 
-        $output = array();
+        $output = [];
         $return_var = null;
 
         // Set exec_string for testing purposes
@@ -122,30 +118,31 @@ class ShellWrap
         // Prepend the path
 
         $parts = explode(' ', $shell);
-        $parts[0] = exec('which ' . $parts[0]);
+        $parts[0] = exec('which '.$parts[0]);
 
         if ($parts[0] != '') {
             $shell = implode(' ', $parts);
         }
 
-        $descriptor_spec = array(
-            0 => array('pipe', 'r'), // Stdout
-            1 => array('pipe', 'w'), // Stdin
-            2 => array('pipe', 'w') // Stderr
-        );
+        $descriptor_spec = [
+            0 => ['pipe', 'r'], // Stdout
+            1 => ['pipe', 'w'], // Stdin
+            2 => ['pipe', 'w'], // Stderr
+        ];
 
         $process = proc_open($shell, $descriptor_spec, $pipes);
 
         if (is_resource($process)) {
-
             fwrite($pipes[0], self::$stdin);
             fclose($pipes[0]);
 
             $output = '';
 
-            while(! feof($pipes[1])) {
+            while (!feof($pipes[1])) {
                 $stdout = fgets($pipes[1], 1024);
-                if (strlen($stdout) == 0) break;
+                if (strlen($stdout) == 0) {
+                    break;
+                }
 
                 if (self::$displayStdout === true) {
                     echo $stdout;
@@ -175,20 +172,17 @@ class ShellWrap
             $return_value = proc_close($process);
 
             if ($return_value != 0) {
-
                 if (self::$exceptionOnError) {
                     throw new ShellWrapException($error_output, $return_value);
                 } else {
                     return $error_output;
                 }
             }
-
         } else {
             throw new ShellWrapException('Process failed to spawn');
         }
 
         //exec($shell, $output, $return_var);
-
     }
 
     // Raw arguments
@@ -220,5 +214,4 @@ class ShellWrap
 
         return new self();
     }
-
 }

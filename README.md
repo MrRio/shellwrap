@@ -7,7 +7,7 @@ What is it?
 It's a beautiful way to use powerful Linux/Unix tools in PHP. Easily and logically pipe commands together,
 capture errors as PHP Exceptions and use a simple yet powerful syntax. Works with any command line tool automagically.
 
-Features 
+Features
 ------------------
 
 * Flexible and sexy syntax.
@@ -20,7 +20,7 @@ Examples
 ------------------
 
 ```php
-<?php 
+<?php
 require_once 'vendor/autoload.php';
 use MrRio\ShellWrap as sh;
 
@@ -31,11 +31,11 @@ echo sh::ls();
 sh::git('checkout', 'master');
 
 // You can also pipe the output of one command, into another
-// This downloads example.com through cURL, follows location, then pipes through grep to 
+// This downloads example.com through cURL, follows location, then pipes through grep to
 // filter for 'html'
-echo sh::grep('html', sh::curl('http://example.com', array(
+echo sh::grep('html', sh::curl('http://example.com', [
 	'location' => true
-)));
+]));
 
 // Touch a file to create it
 sh::touch('file.html');
@@ -60,21 +60,21 @@ try {
 }
 
 // Commands can be written multiple ways
-sh::git('reset', array('hard' => true), 'HEAD');
+sh::git('reset', ['hard' => true], 'HEAD');
 sh::git('reset', '--hard', 'HEAD');
 sh::git(array('reset', '--hard', 'HEAD'));
 
 // Arguments passed in are automatically escaped, this expands to
 // date --date '2012-10-10 10:00:00'
-echo sh::date(array(
+echo sh::date([
 	'date' => '2012-10-10 10:00:00'
-));
+]);
 
 // If arg keys are one letter, is assumes one dash prefixing it
 // date -d '2012-10-10 10:00:00'
-echo sh::date(array(
+echo sh::date([
 	'd' => '2012-10-10 10:00:00'
-));
+]);
 
 
 ?>
@@ -107,8 +107,8 @@ ShellWrap also ships with an interactive shell mode. You can access this by typi
 Warning
 --------
 
-Don't use any user inputted data with these commands. Even with very paranoid filtering, you 
-can't know all the potential pitfalls of each command you're using. Use your noggin. 
+Don't use any user inputted data with these commands. Even with very paranoid filtering, you
+can't know all the potential pitfalls of each command you're using. Use your noggin.
 
 Acknowledgements
 --------------------
