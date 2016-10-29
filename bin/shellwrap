@@ -9,6 +9,7 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
 
 use MrRio\ShellWrap as sh;
 use MrRio\ShellInspector;
+use Psy;
 
 $sh = new MrRio\ShellWrap;
 
@@ -19,13 +20,4 @@ echo "ShellWrap Interactive Shell\n";
 echo "\n";
 echo 'Mapped to $sh due to eval() limitations. Ctrl+D to exit.' . "\n\n";
 
-$boris = new \Boris\Boris('shellwrap> ');
-
-$boris->setInspector(new ShellInspector());
-
-$boris->setLocal(array('sh' => $sh));
-
-try {
-	$boris->start();
-} catch (ShellWrapException $e) {
-}
+eval(\Psy\sh());
