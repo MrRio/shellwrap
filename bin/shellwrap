@@ -10,16 +10,23 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
 }
 
 use MrRio\ShellWrap as sh;
-use MrRio\ShellInspector;
+//use MrRio\ShellInspector;
 use Psy\Shell;
+use Psy\Configuration;
 
-error_reporting(0);
+//error_reporting(0);
 define('SHELL_WRAP_INTERACTIVE', true);
 
 echo "ShellWrap Interactive Shell\n";
 echo "\n";
 echo 'Ctrl+D to exit.' . "\n\n";
 
-$shell = new Shell();
+$config = new Configuration;
+$config->addCasters(
+    [
+        'MrRio\ShellWrap' => 'MrRio\ShellWrap::toArray'
+    ]
+);
+$shell = new Shell($config);
 $shell->addCode('use MrRio\ShellWrap as sh;');
 $shell->run();

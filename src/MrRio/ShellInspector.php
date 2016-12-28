@@ -2,7 +2,7 @@
 
 namespace MrRio;
 
-class ShellInspector extends \Boris\ColoredInspector
+class ShellInspector
 {
     /**
      * Override the public dump function, so we can display plain

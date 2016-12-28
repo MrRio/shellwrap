@@ -219,9 +219,8 @@ class ShellWrap
      *
      * @return array
      */
-    public static function caster($object)
+    public static function toArray()
     {
-
-        return [ $object . '' ];
+        return [ self::$output ];
     }
 }
