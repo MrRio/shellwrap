@@ -214,4 +214,14 @@ class ShellWrap
 
         return new self();
     }
+    /**
+     * Get an array representing the properties of a shellwrap.
+     *
+     * @return array
+     */
+    public static function caster($object)
+    {
+
+        return [ $object . '' ];
+    }
 }
