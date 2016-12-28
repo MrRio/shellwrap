@@ -7,7 +7,7 @@ use MrRio\ShellWrap as sh;
 $sh = new sh();
 
 try {
-    $curl = $sh->curl('https://raw.github.com/guumaster/sh/master/README.md');
+    $curl = $sh->curl('https://raw.githubusercontent.com/MrRio/vtop/master/README.md');
     $grep = $sh->grep('ASDFInstallation', $curl);
     echo "match\n";
     echo $grep;

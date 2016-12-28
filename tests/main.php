@@ -105,4 +105,15 @@ class ShellWrapTest extends \PHPUnit_Framework_TestCase
         $sh = new sh();
         $result = $sh(__DIR__.'/fixtures/fail.sh', 0);
     }
+
+    public function testChainableSyntax()
+    {
+        try {
+            $sh = new sh();
+            $sh->ps('aux')->grep('login');
+            var_dump($sh->ps('aux')->grep('Docker')->toArray());
+        } catch (MrRio\ShellWrapException $e) {
+            //var_dump($e);
+        }
+    }
 }

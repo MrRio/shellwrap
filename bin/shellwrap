@@ -24,7 +24,7 @@ echo 'Ctrl+D to exit.' . "\n\n";
 $config = new Configuration;
 $config->addCasters(
     [
-        'MrRio\ShellWrap' => 'MrRio\ShellWrap::toArray'
+        'MrRio\ShellWrap' => 'MrRio\ShellWrap::caster'
     ]
 );
 $shell = new Shell($config);

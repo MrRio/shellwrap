@@ -56,6 +56,11 @@ class ShellWrap
         self::$stdin = null;
         $closureOut = false;
 
+        // If we've previously been called, pass ourselves into chain
+        if (self::$output !== []) {
+            self::$stdin = strval(self::$output);
+        }
+
         foreach ($arguments as $arg_key => $argument) {
             // If it's being passed in as an object, then pipe into stdin
             if (is_object($argument)) {
@@ -170,7 +175,6 @@ class ShellWrap
             fclose($pipes[2]);
 
             $return_value = proc_close($process);
-
             if ($return_value != 0) {
                 if (self::$exceptionOnError) {
                     throw new ShellWrapException($error_output, $return_value);
@@ -215,12 +219,21 @@ class ShellWrap
         return new self();
     }
     /**
+     * Get an output for the shell
+     *
+     * @return array
+     */
+    public static function caster()
+    {
+        return [ self::$output ];
+    }
+    /**
      * Get an array representing the properties of a shellwrap.
      *
      * @return array
      */
     public static function toArray()
     {
-        return [ self::$output ];
+        return explode("\n", self::$output);
     }
 }
