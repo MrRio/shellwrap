@@ -1,31 +1,32 @@
 #!/usr/bin/env php
 <?php
+error_reporting(E_ALL);
+
 // If we're inside someone else's project - use that autoload
 if (file_exists(__DIR__ . '/../../../autoload.php')) {
-	require_once __DIR__ . '/../../../autoload.php';
+    require_once __DIR__ . '/../../../autoload.php';
 } else {
-	require_once __DIR__ . '/../vendor/autoload.php';
+    require_once __DIR__ . '/../vendor/autoload.php';
 }
 
 use MrRio\ShellWrap as sh;
-use MrRio\ShellInspector;
+//use MrRio\ShellInspector;
+use Psy\Shell;
+use Psy\Configuration;
 
-$sh = new MrRio\ShellWrap;
-
-error_reporting(0);
+//error_reporting(0);
 define('SHELL_WRAP_INTERACTIVE', true);
 
 echo "ShellWrap Interactive Shell\n";
 echo "\n";
-echo 'Mapped to $sh due to eval() limitations. Ctrl+D to exit.' . "\n\n";
+echo 'Ctrl+D to exit.' . "\n\n";
 
-$boris = new \Boris\Boris('shellwrap> ');
-
-$boris->setInspector(new ShellInspector());
-
-$boris->setLocal(array('sh' => $sh));
-
-try {
-	$boris->start();
-} catch (ShellWrapException $e) {
-}
+$config = new Configuration;
+$config->addCasters(
+    [
+        'MrRio\ShellWrap' => 'MrRio\ShellWrap::toArray'
+    ]
+);
+$shell = new Shell($config);
+$shell->addCode('use MrRio\ShellWrap as sh;');
+$shell->run();
