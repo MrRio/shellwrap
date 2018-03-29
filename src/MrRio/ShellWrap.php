@@ -25,7 +25,7 @@ class ShellWrap
     static public $exceptionOnError = true;
 
 
-    private static $output = array();
+    private static $output = '';
     private static $prepend = array();
     private static $stdin = null;
 
