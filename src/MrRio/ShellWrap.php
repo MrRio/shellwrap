@@ -144,7 +144,9 @@ class ShellWrap
 
         if (is_resource($process)) {
 
-            fwrite($pipes[0], self::$stdin);
+            if (isset(self::$stdin)) {
+                fwrite($pipes[0], self::$stdin);
+            }
             fclose($pipes[0]);
 
             $output = '';
