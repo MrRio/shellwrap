@@ -25,7 +25,7 @@ class ShellWrap
     static public $exceptionOnError = true;
 
 
-    private static $output = array();
+    private static $output = '';
     private static $prepend = array();
     private static $stdin = null;
 
@@ -134,11 +134,19 @@ class ShellWrap
             2 => array('pipe', 'w') // Stderr
         );
 
-        $process = proc_open($shell, $descriptor_spec, $pipes);
+        // If you use function chdir() to change working directory to a different directory first, following two
+        // statements should still return same directories. However, in Travis CI they return different directories back
+        // (the 2nd one returns the directory where the PHP script was invoked).
+        //     1. getcwd()
+        //     2. (string) ShellWrap::pwd()
+        // Thus we have the 4th parameter (getcwd()) specified explicitly here, also ideally it's unnecessary.
+        $process = proc_open($shell, $descriptor_spec, $pipes, getcwd());
 
         if (is_resource($process)) {
 
-            fwrite($pipes[0], self::$stdin);
+            if (isset(self::$stdin)) {
+                fwrite($pipes[0], self::$stdin);
+            }
             fclose($pipes[0]);
 
             $output = '';

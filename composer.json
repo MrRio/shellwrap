@@ -1,5 +1,5 @@
 {
-    "name": "mrrio/shellwrap",
+    "name": "deminy/shellwrap",
     "type": "library",
     "description": "Use any command-line tool as a PHP function.",
     "keywords": ["command", "shell", "api", "command-line", "exec"],
