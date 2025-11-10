@@ -1,21 +1,27 @@
 <?php
+
+declare(strict_types=1);
+
 namespace MrRio;
 
-class ShellInspector extends \Boris\ColoredInspector
-{
-	/**
-	 * Override the public dump function, so we can display plain
-	 * text from ShellWrap instead of an object dump.
-	 **/ 
-    public function _dump($value) {
+use Psy\Output\ShellOutput;
 
-        if (is_object($value) && get_class($value) == 'MrRio\ShellWrap') {
-        	echo strval($value);
-        	// Return zero, as this is the exit code
-        	// Otherwise an exception was thrown
-        	return 0;
+class ShellInspector
+{
+    /**
+     * Custom presenter for ShellWrap objects in PsySH
+     *
+     * @param mixed $value The value to present
+     * @param ShellOutput $output The output interface
+     * @return bool Whether the value was handled
+     */
+    public static function present(mixed $value, ShellOutput $output): bool
+    {
+        if ($value instanceof ShellWrap) {
+            $output->writeln(strval($value));
+            return true;
         }
 
-        return parent::_dump($value);
+        return false;
     }
 }

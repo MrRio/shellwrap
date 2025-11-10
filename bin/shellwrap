@@ -1,31 +1,32 @@
 #!/usr/bin/env php
 <?php
+
+declare(strict_types=1);
+
 // If we're inside someone else's project - use that autoload
 if (file_exists(__DIR__ . '/../../../autoload.php')) {
-	require_once __DIR__ . '/../../../autoload.php';
+    require_once __DIR__ . '/../../../autoload.php';
 } else {
-	require_once __DIR__ . '/../vendor/autoload.php';
+    require_once __DIR__ . '/../vendor/autoload.php';
 }
 
-use MrRio\ShellWrap as sh;
-use MrRio\ShellInspector;
+use MrRio\ShellWrap;
 
-$sh = new MrRio\ShellWrap;
+$sh = new ShellWrap();
 
 error_reporting(0);
 define('SHELL_WRAP_INTERACTIVE', true);
 
-echo "ShellWrap Interactive Shell\n";
+echo "ShellWrap Interactive Shell (powered by PsySH)\n";
 echo "\n";
-echo 'Mapped to $sh due to eval() limitations. Ctrl+D to exit.' . "\n\n";
+echo 'ShellWrap instance available as $sh. Use Ctrl+D or "exit" to quit.' . "\n\n";
 
-$boris = new \Boris\Boris('shellwrap> ');
-
-$boris->setInspector(new ShellInspector());
-
-$boris->setLocal(array('sh' => $sh));
+// Start PsySH
+$shell = new \Psy\Shell();
+$shell->setScopeVariables(['sh' => $sh]);
 
 try {
-	$boris->start();
-} catch (ShellWrapException $e) {
+    $shell->run();
+} catch (\Throwable $e) {
+    echo "Error: " . $e->getMessage() . "\n";
 }

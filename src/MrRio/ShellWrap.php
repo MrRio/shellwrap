@@ -1,56 +1,57 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MrRio;
 
-use MrRio\ShellWrapException;
+use Closure;
 
 class ShellWrap
 {
     /**
      * If set to true, will output standard output, if set to a function, will send through function
-     * @var boolean
+     * @var bool|callable
      */
-    static public $displayStdout = false;
+    public static mixed $displayStdout = false;
 
     /**
      * If set to true, will output stderr to standard output, if set to a function, will send through function
-     * @var boolean
+     * @var bool|callable
      */
-    static public $displayStderr = false;
+    public static mixed $displayStderr = false;
 
     /**
      * If set to true, will throw an exception on error
-     * @var boolean
      */
-    static public $exceptionOnError = true;
+    public static bool $exceptionOnError = true;
 
+    private static string $output = '';
 
-    private static $output = array();
-    private static $prepend = array();
-    private static $stdin = null;
+    private static ?array $prepend = null;
 
-    public static $exec_string;
+    private static ?string $stdin = null;
 
-    public function __construct($prepend = null)
+    public static ?string $exec_string = null;
+
+    public function __construct(?array $prepend = null)
     {
         self::$prepend = $prepend;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return self::$output;
     }
 
     /**
-     * Check if array is associative, thanks to
-     * http://stackoverflow.com/questions/173400/#4254008
-     **/
-    private static function __isAssociative($array)
+     * Check if array is associative
+     */
+    private static function isAssociative(array $array): bool
     {
         return (bool) count(array_filter(array_keys($array), 'is_string'));
     }
 
-    private static function __run($arguments)
+    private static function run(array $arguments): void
     {
         // Unwind the args, figure out which ones were passed in as an array
         self::$stdin = null;
@@ -59,33 +60,28 @@ class ShellWrap
         foreach ($arguments as $arg_key => $argument) {
             // If it's being passed in as an object, then pipe into stdin
             if (is_object($argument)) {
-
                 // If it's a anonymous function, then push stdout into it
-                if (get_class($argument) == 'Closure') {
+                if ($argument instanceof Closure) {
                     $closureOut = $argument;
                     unset($arguments[$arg_key]);
                 } else {
                     self::$stdin = strval($argument);
                     unset($arguments[$arg_key]);
                 }
-
             } elseif (is_array($argument)) {
-                if (self::__isAssociative($argument)) {
-
+                if (self::isAssociative($argument)) {
                     // Ok, so we're passing in arguments
-
                     $output = '';
 
                     foreach ($argument as $key => $val) {
-
-                        if ($output != '') {
+                        if ($output !== '') {
                             $output .= ' ';
                         }
 
                         // If you pass 'false', it'll ignore the arg altogether
                         if ($val !== false) {
                             // Figure out if it's a long or short commandline arg
-                            if (strlen($key) == 1) {
+                            if (strlen((string) $key) === 1) {
                                 $output .= '-';
                             } else {
                                 $output .= '--';
@@ -94,18 +90,14 @@ class ShellWrap
 
                             // If you just pass in 'true', it'll just add the arg
                             if ($val !== true) {
-
-                                $output .= ' ' . escapeshellarg($val);
+                                $output .= ' ' . escapeshellarg((string) $val);
                             }
-
                         }
                     }
 
                     $arguments[$arg_key] = $output;
                 } else {
-
                     // We're passing in an array, but it's not --key=val style
-
                     $arguments[$arg_key] = implode(' ', $argument);
                 }
             }
@@ -113,112 +105,99 @@ class ShellWrap
 
         $shell = implode(' ', $arguments);
 
-        $output = array();
-        $return_var = null;
-
         // Set exec_string for testing purposes
         self::$exec_string = $shell;
 
         // Prepend the path
-
         $parts = explode(' ', $shell);
-        $parts[0] = exec('which ' . $parts[0]);
+        $which = exec('which ' . $parts[0]);
 
-        if ($parts[0] != '') {
+        if ($which !== '') {
+            $parts[0] = $which;
             $shell = implode(' ', $parts);
         }
 
-        $descriptor_spec = array(
-            0 => array('pipe', 'r'), // Stdout
-            1 => array('pipe', 'w'), // Stdin
-            2 => array('pipe', 'w') // Stderr
-        );
+        $descriptorSpec = [
+            0 => ['pipe', 'r'], // Stdin
+            1 => ['pipe', 'w'], // Stdout
+            2 => ['pipe', 'w']  // Stderr
+        ];
 
-        $process = proc_open($shell, $descriptor_spec, $pipes);
+        $process = proc_open($shell, $descriptorSpec, $pipes);
 
-        if (is_resource($process)) {
-
-            fwrite($pipes[0], self::$stdin);
-            fclose($pipes[0]);
-
-            $output = '';
-
-            while(! feof($pipes[1])) {
-                $stdout = fgets($pipes[1], 1024);
-                if (strlen($stdout) == 0) break;
-
-                if (self::$displayStdout === true) {
-                    echo $stdout;
-                }
-
-                $outputFunction = self::$displayStdout;
-                if (is_callable($outputFunction)) {
-                    $outputFunction($stdout);
-                }
-
-                if (is_callable($closureOut)) {
-                    $closureOut($stdout);
-                }
-                $output .= $stdout;
-            }
-
-            $error_output = trim(stream_get_contents($pipes[2]));
-
-            if (self::$displayStderr) {
-                echo $error_output;
-            }
-            self::$output = $output;
-
-            fclose($pipes[1]);
-            fclose($pipes[2]);
-
-            $return_value = proc_close($process);
-
-            if ($return_value != 0) {
-
-                if (self::$exceptionOnError) {
-                    throw new ShellWrapException($error_output, $return_value);
-                } else {
-                    return $error_output;
-                }
-            }
-
-        } else {
+        if (!is_resource($process)) {
             throw new ShellWrapException('Process failed to spawn');
         }
 
-        //exec($shell, $output, $return_var);
+        fwrite($pipes[0], self::$stdin ?? '');
+        fclose($pipes[0]);
 
+        $output = '';
+
+        while (!feof($pipes[1])) {
+            $stdout = fgets($pipes[1], 1024);
+            if ($stdout === false || strlen($stdout) === 0) {
+                break;
+            }
+
+            if (self::$displayStdout === true) {
+                echo $stdout;
+            }
+
+            if (is_callable(self::$displayStdout)) {
+                (self::$displayStdout)($stdout);
+            }
+
+            if (is_callable($closureOut)) {
+                $closureOut($stdout);
+            }
+
+            $output .= $stdout;
+        }
+
+        $errorOutput = trim(stream_get_contents($pipes[2]));
+
+        if (self::$displayStderr) {
+            echo $errorOutput;
+        }
+
+        self::$output = $output;
+
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+
+        $returnValue = proc_close($process);
+
+        if ($returnValue !== 0) {
+            if (self::$exceptionOnError) {
+                throw new ShellWrapException($errorOutput, $returnValue);
+            }
+        }
     }
 
-    // Raw arguments
-
-    public function __invoke()
+    public function __invoke(mixed ...$arguments): self
     {
-        $arguments = func_get_args();
-        $this->__run($arguments);
-
+        self::run($arguments);
         return $this;
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments): self
     {
         array_unshift($arguments, $name);
-        $this->__run($arguments);
-
+        self::run($arguments);
         return $this;
     }
 
-    public static function __callStatic($name, $arguments)
+    public static function __callStatic(string $name, array $arguments): self
     {
         array_unshift($arguments, $name);
+
         if (isset(self::$prepend)) {
             $arguments = array_merge(self::$prepend, $arguments);
         }
 
-        self::__run($arguments);
+        self::run($arguments);
 
         return new self();
     }
-
 }

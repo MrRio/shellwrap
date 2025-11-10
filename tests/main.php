@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use MrRio\ShellWrap as sh;
+use MrRio\ShellWrap;
 use MrRio\ShellWrapException;
+use PHPUnit\Framework\TestCase;
 
-class ShellWrapTest extends \PHPUnit_Framework_TestCase
+class ShellWrapTest extends TestCase
 {
-    public function testLsAgainstGlob()
+    public function testLsAgainstGlob(): void
     {
-        $output = sh::ls();
+        $output = ShellWrap::ls();
 
         // @TODO: Need to figure out a nicer way of doing this
         // Needs to be an object for the piping, but then gets converted to a string
@@ -22,89 +25,86 @@ class ShellWrapTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($glob_output, $output);
     }
 
-    // public function testDate()
+    // public function testDate(): void
     // {
     //     // needed in non-english environments
     //     putenv('LC_ALL=en_US.utf8');
-
+    //
     //     // Pass in a date
-    //     $output = sh::date(array(
+    //     $output = ShellWrap::date([
     //         'utc' => true,
     //         'date' => '2012-10-10 10:00:00'
-    //     ));
+    //     ]);
     //     $output = trim(strval($output));
-
+    //
     //     // This is the default output
     //     // @TODO: Check to make sure it's always UTC
     //     $date = 'Wed Oct 10 10:00:00 UTC 2012';
-
+    //
     //     $this->assertEquals($date, $output);
-
+    //
     //     $date_exec = "date --utc --date '2012-10-10 10:00:00'";
-
-    //     $this->assertEquals($date_exec, sh::$exec_string);
-
+    //
+    //     $this->assertEquals($date_exec, ShellWrap::$exec_string);
     // }
 
-    public function testCurlCommand()
+    public function testCurlCommand(): void
     {
-        sh::curl('http://example.com/', array(
+        ShellWrap::curl('http://example.com/', [
             'output' => 'page.html',
             'silent' => false,
             'location' => true
-        ));
+        ]);
 
         // @TODO: Make this less horrible, save files in a temp dir
-
         $this->assertFileExists('page.html');
 
-        sh::rm('page.html');
+        ShellWrap::rm('page.html');
 
-        $this->assertFileNotExists('page.html');
+        $this->assertFileDoesNotExist('page.html');
     }
 
     /**
      * Using 'echo' to test long and short arguments
-     **/
-    public function testLongAndShortArgs()
+     */
+    public function testLongAndShortArgs(): void
     {
         // Call ShellWrap directly as echo is reserved
-        $sh = new sh();
-        $result = $sh('echo', array(
+        $sh = new ShellWrap();
+        $result = $sh('echo', [
             'test' => true,
             'key' => 'value',
             'other' => 'value with spaces',
             's' => true,
             'should_not_be_echod' => false
-        ));
+        ]);
 
         $expected = "echo --test --key 'value' --other 'value with spaces' -s";
-        $this->assertEquals($expected, trim(sh::$exec_string));
+        $this->assertEquals($expected, trim(ShellWrap::$exec_string ?? ''));
 
         // Expect the echo result to remove the shell escaping
         $expected = "--test --key value --other value with spaces -s";
-        $this->assertEquals($expected, trim($result));
+        $this->assertEquals($expected, trim((string) $result));
     }
 
-    /**
-     * @expectedException MrRio\ShellWrapException
-     */
-    public function testRaiseException()
+    public function testRaiseException(): void
     {
-        $sh = new sh();
+        $this->expectException(ShellWrapException::class);
+
+        $sh = new ShellWrap();
         try {
-          $sh(__DIR__ . '/fixtures/fail.sh', 1);
-        }
-        catch (MrRio\ShellWrapException $e) {
-          $this->assertEquals((string) $e, "[1]: foo bar\n");
-          $this->assertEquals($e->getCode(), 1);
-          throw $e;
+            $sh(__DIR__ . '/fixtures/fail.sh', 1);
+        } catch (ShellWrapException $e) {
+            $this->assertEquals("[1]: foo bar\n", (string) $e);
+            $this->assertEquals(1, $e->getCode());
+            throw $e;
         }
     }
 
-    public function testNotRaiseException()
+    public function testNotRaiseException(): void
     {
-        $sh = new sh();
+        $sh = new ShellWrap();
         $result = $sh(__DIR__ . '/fixtures/fail.sh', 0);
+        $this->assertInstanceOf(ShellWrap::class, $result);
     }
 }

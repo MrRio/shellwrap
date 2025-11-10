@@ -21,7 +21,10 @@ Examples
 ------------------
 
 ```php
-<?php 
+<?php
+
+declare(strict_types=1);
+
 require_once 'vendor/autoload.php';
 use MrRio\ShellWrap as sh;
 
@@ -32,11 +35,11 @@ echo sh::ls();
 sh::git('checkout', 'master');
 
 // You can also pipe the output of one command, into another
-// This downloads example.com through cURL, follows location, then pipes through grep to 
+// This downloads example.com through cURL, follows location, then pipes through grep to
 // filter for 'html'
-echo sh::grep('html', sh::curl('http://example.com', array(
-	'location' => true
-)));
+echo sh::grep('html', sh::curl('http://example.com', [
+    'location' => true
+]));
 
 // Touch a file to create it
 sh::touch('file.html');
@@ -47,36 +50,35 @@ sh::rm('file.html');
 // Remove file again (this fails, and throws an exception because the file doesn't exist)
 
 try {
-	sh::rm('file.html');
+    sh::rm('file.html');
 } catch (ShellWrapException $e) {
-	echo 'Caught failing sh::rm() call';
+    echo 'Caught failing sh::rm() call';
 }
 
 
 // This throws an exception, as 'invalidoption' is not a valid argument
 try {
-	echo sh::ls(array('invalidoption' => true));
+    echo sh::ls(['invalidoption' => true]);
 } catch (ShellWrapException $e) {
-	echo 'Caught failing sh::ls() call';
+    echo 'Caught failing sh::ls() call';
 }
 
 // Commands can be written multiple ways
-sh::git('reset', array('hard' => true), 'HEAD');
+sh::git('reset', ['hard' => true], 'HEAD');
 sh::git('reset', '--hard', 'HEAD');
-sh::git(array('reset', '--hard', 'HEAD'));
+sh::git(['reset', '--hard', 'HEAD']);
 
 // Arguments passed in are automatically escaped, this expands to
 // date --date '2012-10-10 10:00:00'
-echo sh::date(array(
-	'date' => '2012-10-10 10:00:00'
-));
+echo sh::date([
+    'date' => '2012-10-10 10:00:00'
+]);
 
 // If arg keys are one letter, is assumes one dash prefixing it
 // date -d '2012-10-10 10:00:00'
-echo sh::date(array(
-	'd' => '2012-10-10 10:00:00'
-));
-
+echo sh::date([
+    'd' => '2012-10-10 10:00:00'
+]);
 
 ?>
 ```
@@ -88,7 +90,7 @@ You can stream the output of a command into a callback function. For example:
 
 ```php
 sh::tail('-f log', function($in) {
-	echo "\033[32m" . date('Y-m-d H:i:s') . "\033[39m " . $in;
+    echo "\033[32m" . date('Y-m-d H:i:s') . "\033[39m " . $in;
 });
 ```
 
